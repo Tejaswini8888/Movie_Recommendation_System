@@ -48,3 +48,15 @@ python main.py
 Recommendations for: Movie 10
 ['Movie 30', 'Movie 245', 'Movie 120', ...]
 ```
+
+## 👩‍💻 Author
+
+**Tejaswini Madarapu**  
+AIML Student | Python & ML Enthusiast  
+
+🔗 **GitHub:**  
+https://github.com/Tejaswini8888  
+
+🔗 **LinkedIn:**  
+https://www.linkedin.com/in/tejaswini-madarapu/
+
