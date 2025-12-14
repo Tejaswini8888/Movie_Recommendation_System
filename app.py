@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 st.set_page_config(
     page_title="Netflix-Style Movie Recommender",
     page_icon="🎬",
-    layout="wide"
+    layout="wide"   
 )
 
 # ---------------- TMDB API KEY ----------------
