@@ -12,12 +12,11 @@ st.set_page_config(
 )
 
 # ---------------- TMDB API KEY ----------------
-# Local run → paste key directly
-# Streamlit Cloud → use secrets.toml
 try:
     TMDB_API_KEY = st.secrets["TMDB_API_KEY"]
 except:
-    TMDB_API_KEY = st.secrets["TMDB_API_KEY"]
+    st.error("TMDB API key not found in secrets")
+    st.stop()
 
 # ---------------- THEME ----------------
 st.markdown("""
@@ -37,12 +36,22 @@ st.markdown("""
     margin-bottom: 30px;
 }
 
-/* FORCE LABEL VISIBILITY */
+/* ✅ FORCE LABEL VISIBILITY */
 div[data-testid="stWidgetLabel"] label,
 div[data-testid="stWidgetLabel"] p {
     color: white !important;
     font-weight: 600 !important;
     opacity: 1 !important;
+}
+
+/* ✅ SELECTBOX TEXT WHITE */
+div[data-baseweb="select"] span {
+    color: white !important;
+}
+
+/* Dropdown options */
+ul[role="listbox"] li {
+    color: black !important;
 }
 
 /* Button */
@@ -65,10 +74,19 @@ div[data-testid="stWidgetLabel"] p {
     margin-top: 6px;
 }
 
-.footer {
-    text-align: center;
-    margin-top: 60px;
-    opacity: 0.8;
+/* Footer buttons */
+.footer-btn {
+    background: rgba(255,255,255,0.15);
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    margin: 10px;
+    display: inline-block;
+}
+.footer-btn:hover {
+    background: rgba(255,255,255,0.3);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -83,19 +101,13 @@ def fetch_movies():
 
     try:
         response = requests.get(url, timeout=10)
-
         if response.status_code != 200:
-            st.error("❌ TMDB API error. Check your API key.")
             return pd.DataFrame()
 
         data = response.json()
-
-        if "results" not in data:
-            st.error("❌ No movie data received from TMDB.")
-            return pd.DataFrame()
-
         movies = []
-        for m in data["results"]:
+
+        for m in data.get("results", []):
             movies.append({
                 "title": m["title"],
                 "overview": m.get("overview", ""),
@@ -108,14 +120,13 @@ def fetch_movies():
 
         return pd.DataFrame(movies)
 
-    except requests.exceptions.RequestException:
-        st.error("🌐 Network error. Please check internet or try again later.")
+    except:
         return pd.DataFrame()
 
 # ---------------- LOAD MOVIES ----------------
 movies = fetch_movies()
-
 if movies.empty:
+    st.error("❌ TMDB API error. Check API key & clear cache.")
     st.stop()
 
 # ---------------- HYBRID RECOMMENDER ----------------
@@ -140,19 +151,20 @@ selected_movie = st.selectbox(
 if st.button("🍿 Recommend Movies"):
     idx = movies[movies["title"] == selected_movie].index[0]
 
-    # Show selected movie
     st.subheader("🎬 Selected Movie")
     if movies.iloc[idx]["poster"]:
         st.image(movies.iloc[idx]["poster"], width=250)
     st.caption(selected_movie)
 
-    # Calculate hybrid scores
     scores = []
     for i in range(len(movies)):
         if i != idx:
             score = (
                 0.7 * overview_similarity[idx][i] +
-                0.3 * genre_similarity(movies.iloc[idx]["genres"], movies.iloc[i]["genres"])
+                0.3 * genre_similarity(
+                    movies.iloc[idx]["genres"],
+                    movies.iloc[i]["genres"]
+                )
             )
             scores.append((i, score))
 
@@ -172,8 +184,9 @@ if st.button("🍿 Recommend Movies"):
 
 # ---------------- FOOTER ----------------
 st.markdown("""
-<div class="footer">
-© 2025 • Netflix-Style Movie Recommendation System  
-Built with ❤️ by Tejaswini
+<div style="text-align:center; margin-top:60px;">
+    <a class="footer-btn" href="https://github.com/Tejaswini8888" target="_blank">👩‍💻 GitHub</a>
+    <a class="footer-btn" href="https://www.linkedin.com/in/tejaswini-madarapu/" target="_blank">💼 LinkedIn</a>
+    <p style="opacity:0.8; margin-top:15px;">© 2025 • Built with ❤️ by Tejaswini</p>
 </div>
 """, unsafe_allow_html=True)
