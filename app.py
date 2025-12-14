@@ -88,6 +88,17 @@ ul[role="listbox"] li {
 .footer-btn:hover {
     background: rgba(255,255,255,0.3);
 }
+
+::selection {
+    background: #6d4c41;   /* brown highlight */
+    color: white;
+}
+
+::-moz-selection {
+    background: #6d4c41;
+    color: white;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
