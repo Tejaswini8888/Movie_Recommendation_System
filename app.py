@@ -1,120 +1,133 @@
 import streamlit as st
+import requests
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="Movie Recommender System",
+    page_title="Netflix-Style Movie Recommender",
     page_icon="🎬",
     layout="wide"
 )
 
-# ---------------- BROWN THEME CSS ----------------
+# ---------------- API KEY ----------------
+try:
+    TMDB_API_KEY = st.secrets["TMDB_API_KEY"]
+except:
+    TMDB_API_KEY = "030f032bddb6fad3b87bb2b228968ba9"
+
+# ---------------- NETFLIX-STYLE CSS ----------------
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #3e2723, #1b0f0a);
-    color: #ffffff;
+    background: #141414;
+    color: white;
 }
 
-/* Titles */
 .main-title {
-    font-size: 42px;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 5px;
+    font-size: 44px;
+    font-weight: 900;
 }
+
 .subtitle {
-    text-align: center;
-    opacity: 0.9;
+    opacity: 0.85;
     margin-bottom: 30px;
 }
 
 /* Labels FIX */
 div[data-testid="stWidgetLabel"] label,
 div[data-testid="stWidgetLabel"] p {
-    color: #ffffff !important;
+    color: white !important;
     font-weight: 600 !important;
-    opacity: 1 !important;
-}
-
-/* Selectbox & inputs */
-.stSelectbox div,
-.stNumberInput input {
-    color: #2b1a0f !important;
 }
 
 /* Button */
 .stButton > button {
-    background: #6d4c41;
+    background: #e50914;
     color: white;
     font-size: 16px;
-    padding: 12px 22px;
-    border-radius: 10px;
+    padding: 10px 24px;
+    border-radius: 6px;
     border: none;
-    font-weight: 600;
 }
 .stButton > button:hover {
-    background: #8d6e63;
+    background: #f40612;
 }
 
-/* Movie cards */
-.movie-card {
-    text-align: center;
-}
+/* Movie card */
 .movie-title {
-    margin-top: 8px;
+    text-align: center;
     font-weight: 600;
+    margin-top: 6px;
+    font-size: 14px;
 }
 
-/* Footer */
 .footer {
     text-align: center;
-    margin-top: 50px;
-    opacity: 0.8;
+    margin-top: 60px;
+    opacity: 0.7;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- LOAD DATA ----------------
-movies = pd.read_csv("movies.csv")
+# ---------------- TMDB FUNCTIONS ----------------
+@st.cache_data
+def fetch_movies():
+    url = f"https://api.themoviedb.org/3/movie/popular?api_key={TMDB_API_KEY}&language=en-US&page=1"
+    data = requests.get(url).json()["results"]
 
-# ---------------- NLP MODEL ----------------
+    movies = []
+    for m in data:
+        movies.append({
+            "title": m["title"],
+            "overview": m["overview"],
+            "poster": "https://image.tmdb.org/t/p/w500" + m["poster_path"],
+            "genres": m["genre_ids"]
+        })
+    return pd.DataFrame(movies)
+
+movies = fetch_movies()
+
+# ---------------- HYBRID MODEL ----------------
 tfidf = TfidfVectorizer(stop_words="english")
-tfidf_matrix = tfidf.fit_transform(movies["overview"])
-similarity = cosine_similarity(tfidf_matrix)
+overview_matrix = tfidf.fit_transform(movies["overview"])
+overview_similarity = cosine_similarity(overview_matrix)
+
+def genre_similarity(g1, g2):
+    return len(set(g1) & set(g2)) / max(len(set(g1) | set(g2)), 1)
 
 # ---------------- HEADER ----------------
-st.markdown("<div class='main-title'>🎬 Movie Recommender System</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Using Natural Language Processing & Machine Learning</div>", unsafe_allow_html=True)
+st.markdown("<div class='main-title'>🎬 Netflix-Style Movie Recommender</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>Hybrid Recommendation using TMDB API, NLP & Genres</div>", unsafe_allow_html=True)
 
-# ---------------- MOVIE SELECTION ----------------
-movie_selected = st.selectbox(
-    "🎥 Select a movie",
+# ---------------- SELECT MOVIE ----------------
+selected_movie = st.selectbox(
+    "Select a movie",
     movies["title"].values
 )
 
-# ---------------- RECOMMEND BUTTON ----------------
-if st.button("🍿 Show Recommendations"):
+# ---------------- RECOMMEND ----------------
+if st.button("🍿 Recommend Movies"):
+    idx = movies[movies["title"] == selected_movie].index[0]
 
-    idx = movies[movies["title"] == movie_selected].index[0]
+    scores = []
+    for i in range(len(movies)):
+        if i != idx:
+            score = (
+                0.7 * overview_similarity[idx][i] +
+                0.3 * genre_similarity(movies.iloc[idx]["genres"], movies.iloc[i]["genres"])
+            )
+            scores.append((i, score))
 
-    # Selected movie
-    st.subheader("🎬 Selected Movie")
-    st.image(movies.iloc[idx]["poster_url"], width=250)
-    st.caption(movie_selected)
+    top_movies = sorted(scores, key=lambda x: x[1], reverse=True)[:5]
 
-    # Recommendations
-    scores = list(enumerate(similarity[idx]))
-    scores = sorted(scores, key=lambda x: x[1], reverse=True)[1:6]
+    st.subheader("✨ Recommended for You")
+    cols = st.columns(5)
 
-    st.subheader("✨ Recommended Movies")
-
-    cols = st.columns(len(scores))
-    for col, (i, _) in zip(cols, scores):
+    for col, (i, _) in zip(cols, top_movies):
         with col:
-            st.image(movies.iloc[i]["poster_url"], use_container_width=True)
+            st.image(movies.iloc[i]["poster"], use_container_width=True)
             st.markdown(
                 f"<div class='movie-title'>{movies.iloc[i]['title']}</div>",
                 unsafe_allow_html=True
@@ -123,6 +136,6 @@ if st.button("🍿 Show Recommendations"):
 # ---------------- FOOTER ----------------
 st.markdown("""
 <div class="footer">
-© 2025 Movie Recommender • Built with ❤️ by Tejaswini
+© 2025 Netflix-Style Movie Recommender | Built by Tejaswini ❤️
 </div>
 """, unsafe_allow_html=True)
