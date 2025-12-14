@@ -49,24 +49,22 @@ movie_selected = st.selectbox(
     options=movies["title"].values
 )
 
-# ---------------- RECOMMEND BUTTON ----------------
 if st.button("🎥 Show Recommendation"):
     idx = movies[movies["title"] == movie_selected].index[0]
+
+    # SHOW SELECTED MOVIE
+    st.subheader("🎬 Selected Movie")
+    st.image(movies.iloc[idx]["poster_url"], width=250)
+    st.caption(movie_selected)
+
+    # RECOMMENDATIONS
     scores = list(enumerate(similarity[idx]))
     scores = sorted(scores, key=lambda x: x[1], reverse=True)[1:6]
 
-    st.subheader("Recommended Movies")
+    st.subheader("✨ Recommended Movies")
 
-    cols = st.columns(5)
+    cols = st.columns(len(scores))
     for col, (i, _) in zip(cols, scores):
         with col:
-            st.markdown("<div class='poster'>", unsafe_allow_html=True)
             st.image(movies.iloc[i]["poster_url"], use_container_width=True)
             st.caption(movies.iloc[i]["title"])
-            st.markdown("</div>", unsafe_allow_html=True)
-
-# ---------------- FOOTER ----------------
-st.markdown("""
-<hr>
-<center>© 2025 | Movie Recommendation System | Built with ❤️ using Streamlit</center>
-""", unsafe_allow_html=True)
