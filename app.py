@@ -36,14 +36,6 @@ st.markdown("""
     margin-bottom: 30px;
 }
 
-/* FORCE LABEL VISIBILITY */
-div[data-testid="stWidgetLabel"] label,
-div[data-testid="stWidgetLabel"] p {
-    color: white !important;
-    font-weight: 600 !important;
-    opacity: 1 !important;
-}
-
 /* BaseWeb typography override */
 div[data-baseweb="typography"] {
     color: #ffffff !important;
@@ -80,19 +72,31 @@ ul[role="listbox"] li {
     margin-top: 6px;
 }
 
-/* Footer buttons */
+/* INTERACTIVE FOOTER BUTTONS */
 .footer-btn {
-    background: rgba(255,255,255,0.15);
-    padding: 12px 24px;
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 14px 28px;
+    border-radius: 14px;
     text-decoration: none;
     color: white;
     font-weight: 600;
-    margin: 10px;
+    margin: 12px;
     display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
 }
+
+/* Hover animation */
 .footer-btn:hover {
-    background: rgba(255,255,255,0.3);
+    transform: translateY(-6px) scale(1.05);
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 14px 30px rgba(141, 110, 99, 0.6);
+}
+
+/* Click feedback */
+.footer-btn:active {
+    transform: scale(0.96);
 }
 
 ::selection {
@@ -156,7 +160,7 @@ def genre_similarity(g1, g2):
 st.markdown("<div class='main-title'>🎬 Netflix-Style Movie Recommender</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Hybrid Recommendation using TMDB API, NLP & Genres</div>", unsafe_allow_html=True)
 
-# ---------------- MOVIE SELECT (FIXED ✅) ----------------
+# ---------------- MOVIE SELECT (FIXED) ----------------
 selected_movie = st.selectbox(
     label="",
     options=movies["title"].values,
