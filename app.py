@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 st.set_page_config(
     page_title="Netflix-Style Movie Recommender",
     page_icon="🎬",
-    layout="wide"   
+    layout="wide"
 )
 
 # ---------------- TMDB API KEY ----------------
@@ -44,27 +44,11 @@ div[data-testid="stWidgetLabel"] p {
     opacity: 1 !important;
 }
 
-/* 🔥 FORCE SELECTBOX LABEL (Select a movie) TO PURE WHITE */
-    div[data-testid="stWidgetLabel"] label,
-    div[data-testid="stWidgetLabel"] label span,
-    div[data-testid="stWidgetLabel"] label p,
-    div[data-testid="stWidgetLabel"] * {
-            color: #ffffff !important;
-        opacity: 1 !important;
-    }
-
-/* BaseWeb typography override (THIS is the key fix) */
-    div[data-baseweb="typography"] {
-        color: #ffffff !important;
-        opacity: 1 !important;
-    }
-
-/* FORCE "Select a movie" label to pure white */
-    div[data-testid="stWidgetLabel"] > label > p {
-        color: #ffffff !important;
-        opacity: 1 !important;
-        font-weight: 600 !important;
-    }
+/* BaseWeb typography override */
+div[data-baseweb="typography"] {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
 
 /* SELECTBOX TEXT WHITE */
 div[data-baseweb="select"] span {
@@ -112,15 +96,13 @@ ul[role="listbox"] li {
 }
 
 ::selection {
-    background: #6d4c41;   /* brown highlight */
+    background: #6d4c41;
     color: white;
 }
-
 ::-moz-selection {
     background: #6d4c41;
     color: white;
 }
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -174,14 +156,17 @@ def genre_similarity(g1, g2):
 st.markdown("<div class='main-title'>🎬 Netflix-Style Movie Recommender</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Hybrid Recommendation using TMDB API, NLP & Genres</div>", unsafe_allow_html=True)
 
-# ---------------- MOVIE SELECT ----------------
+# ---------------- MOVIE SELECT (FIXED ✅) ----------------
 selected_movie = st.selectbox(
-    "Select a movie",
-    movies["title"].values
+    label="",
+    options=movies["title"].values,
+    index=None,
+    placeholder="Select a movie",
+    label_visibility="collapsed"
 )
 
 # ---------------- RECOMMEND ----------------
-if st.button("🍿 Recommend Movies"):
+if selected_movie and st.button("🍿 Recommend Movies"):
     idx = movies[movies["title"] == selected_movie].index[0]
 
     st.subheader("🎬 Selected Movie")
