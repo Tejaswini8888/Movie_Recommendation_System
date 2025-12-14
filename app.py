@@ -44,12 +44,27 @@ div[data-testid="stWidgetLabel"] p {
     opacity: 1 !important;
 }
 
+/* 🔥 FORCE SELECTBOX LABEL (Select a movie) TO PURE WHITE */
+    div[data-testid="stWidgetLabel"] label,
+    div[data-testid="stWidgetLabel"] label span,
+    div[data-testid="stWidgetLabel"] label p,
+    div[data-testid="stWidgetLabel"] * {
+            color: #ffffff !important;
+        opacity: 1 !important;
+    }
+
+/* BaseWeb typography override (THIS is the key fix) */
+    div[data-baseweb="typography"] {
+        color: #ffffff !important;
+        opacity: 1 !important;
+    }
+
 /* FORCE "Select a movie" label to pure white */
-div[data-testid="stWidgetLabel"] > label > p {
-    color: #ffffff !important;
-    opacity: 1 !important;
-    font-weight: 600 !important;
-}
+    div[data-testid="stWidgetLabel"] > label > p {
+        color: #ffffff !important;
+        opacity: 1 !important;
+        font-weight: 600 !important;
+    }
 
 /* SELECTBOX TEXT WHITE */
 div[data-baseweb="select"] span {
