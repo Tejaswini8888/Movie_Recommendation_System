@@ -5,8 +5,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 # ---------------- PAGE CONFIG ----------------
 st.set_page_config(
-    page_title="🎬 Movie Recommendation System",
-    page_icon="🎥",
+    page_title="Movie Recommender System",
+    page_icon="🎬",
     layout="wide"
 )
 
@@ -14,88 +14,88 @@ st.set_page_config(
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background: radial-gradient(circle at top, #111 0%, #000 60%);
     color: white;
 }
 
-.title {
-    text-align: center;
-    font-size: 40px;
-    font-weight: 700;
+h1 {
+    font-size: 42px;
 }
 
 .subtitle {
-    text-align: center;
-    font-size: 18px;
-    opacity: 0.9;
-    margin-bottom: 30px;
-}
-
-.card {
-    background: rgba(255,255,255,0.1);
-    padding: 25px;
-    border-radius: 15px;
+    font-size: 16px;
+    opacity: 0.85;
+    margin-bottom: 25px;
 }
 
 .stButton > button {
-    background: #ff4b4b;
+    background: #c62828;
     color: white;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-size: 16px;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 15px;
     border: none;
 }
 
 .stButton > button:hover {
-    background: #ff6b6b;
+    background: #e53935;
+}
+
+.poster {
+    text-align: center;
+}
+
+.poster img {
+    border-radius: 12px;
+    transition: transform 0.3s;
+}
+
+.poster img:hover {
+    transform: scale(1.05);
 }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------- HEADER ----------------
-st.markdown("<div class='title'>🎬 Movie Recommendation System</div>", unsafe_allow_html=True)
-st.markdown("<div class='subtitle'>Content-Based Movie Recommendations using Machine Learning</div>", unsafe_allow_html=True)
+st.title("🎬 Movie Recommender System Using NLP and ML")
+st.markdown(
+    "<div class='subtitle'>Type or select a movie from the dropdown</div>",
+    unsafe_allow_html=True
+)
 
 # ---------------- LOAD DATA ----------------
-@st.cache_data
-def load_data():
-    return pd.read_csv("movies.csv")
+movies = pd.read_csv("movies.csv")
 
-movies = load_data()
+# ---------------- NLP MODEL ----------------
+movies["features"] = movies["overview"] + " " + movies["genres"]
 
-# ---------------- FEATURE ENGINEERING ----------------
-movies['combined_features'] = movies['overview'] + " " + movies['genres']
-
-tfidf = TfidfVectorizer(stop_words='english')
-tfidf_matrix = tfidf.fit_transform(movies['combined_features'])
-
+vectorizer = TfidfVectorizer(stop_words="english")
+tfidf_matrix = vectorizer.fit_transform(movies["features"])
 similarity = cosine_similarity(tfidf_matrix)
 
 # ---------------- UI ----------------
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-
 movie_selected = st.selectbox(
-    "🎥 Select a movie you like",
-    movies['title'].values
+    "",
+    movies["title"].values
 )
 
-recommend = st.button("🎯 Recommend Movies")
-
-st.markdown("</div>", unsafe_allow_html=True)
+recommend_btn = st.button("Show Recommendation")
 
 # ---------------- RECOMMENDATION LOGIC ----------------
-def recommend_movies(movie_title):
-    index = movies[movies['title'] == movie_title].index[0]
-    scores = list(enumerate(similarity[index]))
+def recommend(movie):
+    idx = movies[movies["title"] == movie].index[0]
+    scores = list(enumerate(similarity[idx]))
     scores = sorted(scores, key=lambda x: x[1], reverse=True)
-    recommendations = scores[1:6]
-    movie_indices = [i[0] for i in recommendations]
-    return movies.iloc[movie_indices][['title', 'genres']]
+    top_movies = scores[1:6]
+    return movies.iloc[[i[0] for i in top_movies]]
 
-if recommend:
-    st.subheader("🍿 Recommended Movies for You")
-    results = recommend_movies(movie_selected)
+if recommend_btn:
+    results = recommend(movie_selected)
 
-    for i, row in results.iterrows():
-        st.markdown(f"**🎬 {row['title']}**")
-        st.caption(f"Genres: {row['genres']}")
+    cols = st.columns(5)
+    for col, (_, row) in zip(cols, results.iterrows()):
+        with col:
+            st.markdown("<div class='poster'>", unsafe_allow_html=True)
+            st.image(row["poster"], use_container_width=True)
+            st.caption(row["title"])
+            st.markdown("</div>", unsafe_allow_html=True)
