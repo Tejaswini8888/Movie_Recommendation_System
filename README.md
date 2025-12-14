@@ -110,9 +110,8 @@ streamlit run app.py
 
 ## 📸 Screenshots
 
-<img width="966" height="748" alt="Home Screen" src="https://github.com/user-attachments/assets/eab32f65-3644-47e7-92c9-db01100e3e47" />
+<img width="1836" height="723" alt="image" src="https://github.com/user-attachments/assets/9f7b7a05-22d6-442f-bc12-a42fa838b91a" />
 
-<img width="661" height="590" alt="Movie Selection" src="https://github.com/user-attachments/assets/15815d0c-22ce-44ad-a75d-7d7404c6aba6" />
 
 <img width="1847" height="853" alt="Recommendations" src="https://github.com/user-attachments/assets/f66baaab-272b-4f11-8a12-08356de315b4" />
 
