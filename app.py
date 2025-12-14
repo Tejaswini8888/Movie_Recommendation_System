@@ -17,7 +17,7 @@ st.set_page_config(
 try:
     TMDB_API_KEY = st.secrets["TMDB_API_KEY"]
 except:
-    TMDB_API_KEY = "PASTE_YOUR_TMDB_API_KEY_HERE"
+    TMDB_API_KEY = "your_key_here"
 
 # ---------------- THEME ----------------
 st.markdown("""
