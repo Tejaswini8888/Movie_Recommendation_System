@@ -26,25 +26,41 @@ st.markdown("""
     color: white;
 }
 
+/* CENTERED HEADER */
 .main-title {
     font-size: 44px;
     font-weight: 900;
+    text-align: center;
 }
 
 .subtitle {
     opacity: 0.85;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
+    text-align: center;
 }
 
-/* BaseWeb typography override */
-div[data-baseweb="typography"] {
-    color: #ffffff !important;
-    opacity: 1 !important;
+/* CENTER SELECTBOX */
+div[data-testid="stSelectbox"] {
+    display: flex;
+    justify-content: center;
 }
 
-/* SELECTBOX TEXT WHITE */
+/* SELECTBOX CONTAINER INTERACTION */
+div[data-baseweb="select"] {
+    width: 360px;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect like footer buttons */
+div[data-baseweb="select"]:hover {
+    transform: translateY(-4px) scale(1.03);
+    box-shadow: 0 14px 30px rgba(141, 110, 99, 0.6);
+}
+
+/* Select text white */
 div[data-baseweb="select"] span {
     color: white !important;
+    font-weight: 600;
 }
 
 /* Dropdown options */
@@ -52,12 +68,16 @@ ul[role="listbox"] li {
     color: black !important;
 }
 
-/* Button */
+/* Recommend Button */
+.stButton {
+    display: flex;
+    justify-content: center;
+}
 .stButton > button {
     background: #6d4c41;
     color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
+    padding: 12px 28px;
+    border-radius: 10px;
     font-size: 16px;
     border: none;
 }
@@ -86,24 +106,16 @@ ul[role="listbox"] li {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     cursor: pointer;
 }
-
-/* Hover animation */
 .footer-btn:hover {
     transform: translateY(-6px) scale(1.05);
     background: rgba(255, 255, 255, 0.28);
     box-shadow: 0 14px 30px rgba(141, 110, 99, 0.6);
 }
-
-/* Click feedback */
 .footer-btn:active {
     transform: scale(0.96);
 }
 
 ::selection {
-    background: #6d4c41;
-    color: white;
-}
-::-moz-selection {
     background: #6d4c41;
     color: white;
 }
@@ -138,7 +150,6 @@ def fetch_movies():
             })
 
         return pd.DataFrame(movies)
-
     except:
         return pd.DataFrame()
 
@@ -160,7 +171,7 @@ def genre_similarity(g1, g2):
 st.markdown("<div class='main-title'>🎬 Netflix-Style Movie Recommender</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>Hybrid Recommendation using TMDB API, NLP & Genres</div>", unsafe_allow_html=True)
 
-# ---------------- MOVIE SELECT (FIXED) ----------------
+# ---------------- MOVIE SELECT (CENTERED + INTERACTIVE) ----------------
 selected_movie = st.selectbox(
     label="",
     options=movies["title"].values,
