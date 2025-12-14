@@ -1,11 +1,6 @@
-title,overview,genres
-The Dark Knight,Batman faces Joker in Gotham,Action Crime Drama
-Inception,A thief steals secrets through dream-sharing,Action Sci-Fi Thriller
-Interstellar,Explorers travel through a wormhole,Adventure Drama Sci-Fi
-The Matrix,A hacker discovers reality is a simulation,Action Sci-Fi
-Titanic,A love story on a doomed ship,Romance Drama
-Avatar,A marine explores an alien planet,Action Adventure Sci-Fi
-Forrest Gump,Life journey of a simple man,Drama Romance
-Gladiator,A Roman general seeks revenge,Action Drama
-The Shawshank Redemption,A man finds hope in prison,Drama
-Fight Club,An underground fight club changes lives,Drama Thriller
+title,overview,poster_url
+Toy Story,A story of toys that come to life,https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg
+Toy Story 2,Toys go on an adventure,https://image.tmdb.org/t/p/w500/7G9915LfUQ2lVfwMEEhDsn3kT4B.jpg
+Toy Story 3,Toys face a new future,https://image.tmdb.org/t/p/w500/AbbXspMOwdvwWZgVN0nabZq03Ec.jpg
+The Santa Clause,A man becomes Santa Claus,https://image.tmdb.org/t/p/w500/4A1Y4F9XU2nL7G4z3a7ZxGqL6hP.jpg
+The Adventures of Elmo,Elmo explores the world,https://image.tmdb.org/t/p/w500/lxC6Q7oQvZ8W1YxDCEV4VpWw2gw.jpg
