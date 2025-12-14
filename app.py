@@ -36,7 +36,7 @@ st.markdown("""
     margin-bottom: 30px;
 }
 
-/* ✅ FORCE LABEL VISIBILITY */
+/* FORCE LABEL VISIBILITY */
 div[data-testid="stWidgetLabel"] label,
 div[data-testid="stWidgetLabel"] p {
     color: white !important;
@@ -44,7 +44,14 @@ div[data-testid="stWidgetLabel"] p {
     opacity: 1 !important;
 }
 
-/* ✅ SELECTBOX TEXT WHITE */
+/* FORCE "Select a movie" label to pure white */
+div[data-testid="stWidgetLabel"] > label > p {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    font-weight: 600 !important;
+}
+
+/* SELECTBOX TEXT WHITE */
 div[data-baseweb="select"] span {
     color: white !important;
 }
@@ -198,6 +205,6 @@ st.markdown("""
 <div style="text-align:center; margin-top:60px;">
     <a class="footer-btn" href="https://github.com/Tejaswini8888" target="_blank">👩‍💻 GitHub</a>
     <a class="footer-btn" href="https://www.linkedin.com/in/tejaswini-madarapu/" target="_blank">💼 LinkedIn</a>
-    <p style="opacity:0.8; margin-top:15px;">© 2025 • Built with ❤️ by Tejaswini</p>
+    <p style="opacity:0.8; margin-top:15px;">© 2025 • Built with ❤️ by Tejaswini Madarapu</p>
 </div>
 """, unsafe_allow_html=True)
