@@ -9,6 +9,14 @@ It uses **TF-IDF vectorization** and **cosine similarity** to compare movies bas
 
 ---
 
+
+## 🌐 Live Demo
+
+🔗 **Try the App Here:**  
+https://movierecommendationsystem-project.streamlit.app/
+
+---
+
 ## 🧠 What This Project Shows
 
 - Content-based filtering  
